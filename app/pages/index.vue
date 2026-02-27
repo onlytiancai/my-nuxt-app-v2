@@ -72,6 +72,26 @@
             </svg>
           </div>
         </NuxtLink>
+
+        <!-- Nuxt UI Demo Card -->
+        <NuxtLink
+          to="/ui-demo"
+          class="group bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300"
+        >
+          <div class="w-16 h-16 bg-indigo-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-3">Nuxt UI 演示</h2>
+          <p class="text-white/80">探索 @nuxt/ui 提供的丰富组件库</p>
+          <div class="mt-4 flex items-center text-indigo-300 group-hover:text-indigo-200">
+            <span>进入演示</span>
+            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </NuxtLink>
       </div>
 
       <!-- Footer -->

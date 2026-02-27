@@ -2,17 +2,13 @@
 
 ## Tech Stack
 
-- **Framework**: Nuxt 4 (v4.3.1+)
-- **Vue**: Vue 3.5.28+
-- **CSS Framework**: Tailwind CSS (via @nuxtjs/tailwindcss)
-- **Package Manager**: pnpm
-- **Router**: Vue Router (Nuxt pages)
+pnpm + typescript + vue3 + nuxt4 + tailwind4
 
 ## Directory Structure
 
 ```
 my-nuxt-app/
-├── app/                      # Source directory (srcDir)
-├── server/                   # Server-side code (serverDir)
+├── app/                      # Client-side code
+├── server/                   # Server-side code
 ```
 
