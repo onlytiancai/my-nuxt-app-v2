@@ -185,9 +185,12 @@
                 </div>
               </div>
 
-              <UAlert icon="i-lucide:lightbulb" color="info" title="提示">
-                本演示使用 Prisma ORM 操作 SQLite 数据库，数据存储在本地文件中。
-              </UAlert>
+              <UAlert
+                icon="i-lucide:lightbulb"
+                color="info"
+                title="提示"
+                description="本演示使用 Prisma ORM 操作 SQLite 数据库，数据存储在本地文件中。"
+              />
             </div>
           </UCard>
         </section>

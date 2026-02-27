@@ -204,27 +204,11 @@
           通知反馈
         </h2>
         <div class="space-y-4">
-          <UAlert icon="i-lucide:check-circle" color="success">
-            这是一条成功的消息！操作已成功完成。
-          </UAlert>
-          <UAlert icon="i-lucide:info" color="info">
-            这是一条提示信息，请注意查看。
-          </UAlert>
-          <UAlert icon="i-lucide:alert-triangle" color="warning">
-            这是一条警告信息，请注意。
-          </UAlert>
-          <UAlert icon="i-lucide:x-circle" color="error">
-            这是一条错误消息，操作失败了。
-          </UAlert>
-          <UAlert type="success" color="success" class="!border-l-4 !border-l-green-500">
-            <div class="flex items-start">
-              <UIcon name="i-lucide:check-circle" class="mr-3 mt-0.5" />
-              <div>
-                <h4 class="font-semibold">操作成功</h4>
-                <p class="text-sm mt-1">数据已成功保存到服务器。</p>
-              </div>
-            </div>
-          </UAlert>
+          <UAlert icon="i-lucide:check-circle" color="success" title="成功" description="这是一条成功的消息！操作已成功完成。" />
+          <UAlert icon="i-lucide:info" color="info" title="提示" description="这是一条提示信息，请注意查看。" />
+          <UAlert icon="i-lucide:alert-triangle" color="warning" title="警告" description="这是一条警告信息，请注意。" />
+          <UAlert icon="i-lucide:x-circle" color="error" title="错误" description="这是一条错误消息，操作失败了。" />
+          <UAlert color="success" class="!border-l-4 !border-l-green-500" title="操作成功" description="数据已成功保存到服务器。" />
         </div>
       </section>
 
