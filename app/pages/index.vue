@@ -47,6 +47,23 @@
         </div>
       </div>
 
+      <!-- API Demo -->
+      <div class="bg-white rounded-xl shadow-lg p-8 mb-16">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">API 调用示例</h2>
+        <div class="text-center">
+          <button
+            @click="fetchGreeting"
+            class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            调用 API
+          </button>
+          <div v-if="greeting" class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <p class="text-lg text-gray-800">{{ greeting.message }}</p>
+            <p class="text-sm text-gray-500 mt-2">{{ greeting.timestamp }}</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Button Showcase -->
       <div class="flex flex-wrap justify-center gap-4 mb-16">
         <button class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
@@ -111,5 +128,10 @@
 </template>
 
 <script setup>
-// Page setup logic here
+const greeting = ref(null)
+
+const fetchGreeting = async () => {
+  const response = await $fetch('/api/greeting')
+  greeting.value = response
+}
 </script>
