@@ -50,7 +50,7 @@
       <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
         <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
           <span class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center mr-3">
-            <Icon name="mdi:setup" class="w-5 h-5 text-white" />
+            <Icon name="mdi:account-cog" class="w-5 h-5 text-white" />
           </span>
           安装与配置
         </h2>
@@ -190,7 +190,7 @@ pnpm add -D @iconify-json/fa</code></pre>
   &lt;Icon name="mdi:home" mode="svg" /&gt;
 
   &lt;!-- 内联样式 --&gt;
-  &lt;Icon name="mdi:settings" style="color: #ff5733" /&gt;
+  &lt;Icon name="mdi:cog" style="color: #ff5733" /&gt;
 &lt;/template&gt;</code></pre>
           </div>
         </div>
@@ -346,7 +346,7 @@ pnpm add -D @iconify-json/fa</code></pre>
         <!-- FontAwesome Collection -->
         <div>
           <h3 class="text-xl font-semibold text-gray-800 mb-4">
-            <Icon name="fa:FontAwesome" class="inline w-5 h-5 mr-2 text-green-600" />
+            <Icon name="fa:font" class="inline w-5 h-5 mr-2 text-green-600" />
             Font Awesome (fa:*)
           </h3>
           <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -384,7 +384,7 @@ pnpm add -D @iconify-json/fa</code></pre>
                 <span>删除</span>
               </button>
               <button class="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors">
-                <Icon name="mdi:settings" size="20" />
+                <Icon name="mdi:cog" size="20" />
                 <span>设置</span>
               </button>
               <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-colors">
@@ -509,7 +509,7 @@ pnpm add -D @iconify-json/fa</code></pre>
             <h3 class="text-lg font-semibold text-gray-700 mb-3">加载状态</h3>
             <div class="flex items-center gap-6">
               <div class="flex flex-col items-center gap-2">
-                <Icon name="mdi:loader" class="animate-spin w-8 h-8 text-indigo-600" />
+                <Icon name="mdi:progress-clock" class="animate-spin w-8 h-8 text-indigo-600" />
                 <span class="text-xs text-gray-500">加载中...</span>
               </div>
               <div class="flex flex-col items-center gap-2">
@@ -594,7 +594,7 @@ export default defineAppConfig({
             <div class="mt-4 flex items-center gap-4">
               <Icon name="mdi:star" mode="css" size="32" />
               <Icon name="mdi:home" mode="css" size="32" />
-              <Icon name="mdi:settings" mode="css" size="32" />
+              <Icon name="mdi:cog" mode="css" size="32" />
             </div>
           </div>
 
@@ -612,7 +612,7 @@ export default defineAppConfig({
             <div class="mt-4 flex items-center gap-4">
               <Icon name="mdi:star" mode="svg" size="32" />
               <Icon name="mdi:home" mode="svg" size="32" />
-              <Icon name="mdi:settings" mode="svg" size="32" />
+              <Icon name="mdi:cog" mode="svg" size="32" />
             </div>
           </div>
         </div>
@@ -848,7 +848,6 @@ const mdiIcons = [
   'wifi',
   'bluetooth',
   'battery',
-  'currency',
 ]
 
 // Video Game UI Icons
@@ -856,19 +855,19 @@ const uilIcons = [
   'github',
   'star',
   'home',
-  'settings',
+  'setting',
   'user',
   'envelope',
   'lock',
   'eye',
-  'magnifying-glass',
-  'menu',
+  'search',
+  'grid',
   'x',
   'check-circle',
-  'warning',
+  'exclamation-triangle',
   'trash',
-  'pencil',
-  'download',
+  'edit',
+  'arrow-down',
   'upload',
   'share',
   'bell',
@@ -882,20 +881,20 @@ const uilIcons = [
 const phIcons = [
   'heart',
   'star',
-  'home',
-  'settings',
+  'house',
+  'gear',
   'user',
   'envelope',
   'lock',
   'eye',
   'magnifying-glass',
-  'menu',
+  'list',
   'x',
   'check-circle',
   'warning',
   'trash',
-  'pencil',
-  'download',
+  'pencil-simple',
+  'download-simple',
   'upload',
   'share',
   'bell',
@@ -907,7 +906,7 @@ const phIcons = [
 
 // Font Awesome
 const faIcons = [
-  'FontAwesome',
+  'font',
   'heart',
   'star',
   'home',
@@ -918,7 +917,7 @@ const faIcons = [
   'eye',
   'search',
   'bars',
-  'times',
+  'times-circle',
   'check-circle',
   'exclamation-triangle',
   'trash',
@@ -927,7 +926,7 @@ const faIcons = [
   'upload',
   'share-alt',
   'bell',
-  'clock',
+  'clock-o',
   'calendar',
   'folder',
   'file',

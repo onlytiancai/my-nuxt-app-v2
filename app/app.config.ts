@@ -9,6 +9,8 @@ export default defineAppConfig({
       'nuxt': 'logos:nuxt-icon',
       'github': 'bi:github',
       'twitter': 'bi:twitter',
+      'heart': 'mdi:heart',
+      'star': 'mdi:star',
     },
     cssLayer: 'base', // set the css layer to inject to
   },
