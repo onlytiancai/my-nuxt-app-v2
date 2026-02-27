@@ -149,7 +149,7 @@
             <!-- Select -->
             <div>
               <label class="block mb-2 text-sm font-medium text-gray-700">选择器</label>
-              <USelect v-model="form.select" :options="selectOptions" placeholder="请选择" />
+              <USelectMenu v-model="form.select" :items="selectOptions" placeholder="请选择" :content="{ side: 'bottom', sideOffset: 8, collisionPadding: 8, hideWhenDetached: false, modal: false, trapFocus: false }" />
             </div>
 
             <!-- Checkbox -->

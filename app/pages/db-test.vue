@@ -95,7 +95,7 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">作者</label>
-                <USelect v-model="postForm.authorId" :options="userSelectOptions" placeholder="请选择作者" />
+                <USelectMenu v-model="postForm.authorId" :items="userSelectOptions" placeholder="请选择作者" :content="{ side: 'bottom', sideOffset: 8, collisionPadding: 8, modal: false, trapFocus: false }" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">内容</label>

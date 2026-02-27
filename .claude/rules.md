@@ -12,3 +12,6 @@ my-nuxt-app/
 ├── server/                   # Server-side code
 ```
 
+## 参考文档
+
+- nuxt ui :https://ui.nuxt.com/docs/getting-started/ai/llms-txt
