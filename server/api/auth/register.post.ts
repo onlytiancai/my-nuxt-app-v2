@@ -58,9 +58,10 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error: any) {
     if (error instanceof z.ZodError) {
+      const firstError = error.errors?.[0]?.message || '验证失败'
       throw createError({
         statusCode: 400,
-        message: error.errors[0].message,
+        message: firstError,
       })
     }
     throw error
