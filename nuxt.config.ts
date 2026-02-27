@@ -10,6 +10,7 @@ export default defineNuxtConfig({
       },
     ],
     "@nuxt/icon",
+    "nuxt-auth-utils",
   ],
   css: ["~/assets/css/main.css"],
 });

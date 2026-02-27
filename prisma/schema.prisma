@@ -11,11 +11,32 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String?  // 密码登录时使用，OAuth 用户为空
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  // 关联的 OAuth 账户
+  accounts Account[]
+  posts    Post[]
 }
+
+model Account {
+  id                Int    @id @default(autoincrement())
+  userId            Int
+  provider          String // 'github' | 'google'
+  providerAccountId String // OAuth 提供商的用户 ID
+  access_token      String?
+  refresh_token     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String

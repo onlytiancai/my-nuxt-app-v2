@@ -11,6 +11,50 @@
         </p>
       </header>
 
+      <!-- Auth Buttons -->
+      <div class="flex justify-center gap-4 mb-12">
+        <template v-if="loggedIn">
+          <UButton
+            to="/dashboard"
+            color="white"
+            variant="solid"
+            size="lg"
+            icon="i-lucide-user"
+          >
+            用户中心
+          </UButton>
+          <UButton
+            color="white"
+            variant="outline"
+            size="lg"
+            icon="i-lucide-log-out"
+            :loading="logoutLoading"
+            @click="handleLogout"
+          >
+            退出
+          </UButton>
+        </template>
+        <template v-else>
+          <UButton
+            to="/login"
+            color="white"
+            variant="solid"
+            size="lg"
+            icon="i-lucide-log-in"
+          >
+            登录
+          </UButton>
+          <UButton
+            to="/register"
+            color="white"
+            variant="outline"
+            size="lg"
+          >
+            注册
+          </UButton>
+        </template>
+      </div>
+
       <!-- Navigation Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Tailwind Demo Card -->
@@ -121,3 +165,20 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const { loggedIn, clear: clearSession } = useUserSession()
+const logoutLoading = ref(false)
+
+async function handleLogout() {
+  logoutLoading.value = true
+  try {
+    await $fetch('/api/auth/logout', { method: 'POST' })
+    await clearSession()
+  } catch (e) {
+    console.error('Logout failed:', e)
+  } finally {
+    logoutLoading.value = false
+  }
+}
+</script>
