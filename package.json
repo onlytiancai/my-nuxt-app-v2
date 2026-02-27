@@ -15,7 +15,9 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@iconify-json/bi": "^1.2.7",
     "@iconify-json/fa": "^1.2.2",
+    "@iconify-json/logos": "^1.2.10",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/ph": "^1.2.2",
     "@iconify-json/tabler": "^1.2.27",
