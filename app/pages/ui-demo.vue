@@ -1,18 +1,32 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <!-- Header -->
-    <header class="mb-12 text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-        <UIcon name="i-lucide:palette" class="inline mr-3 text-indigo-500" />
-        Nuxt UI 组件演示
-      </h1>
-      <p class="text-lg text-gray-600">探索 @nuxt/ui 提供的丰富组件</p>
-    </header>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-indigo-600 flex items-center gap-2">
+          <UIcon name="i-lucide:palette" class="w-8 h-8" />
+          Nuxt UI 组件演示
+        </h1>
+        <NuxtLink to="/" class="text-gray-600 hover:text-indigo-600 transition-colors">
+          返回首页
+        </NuxtLink>
+      </div>
+    </nav>
 
-    <!-- Navigation Tabs -->
-    <div class="mb-12">
-      <UTabs v-model="activeTab" :items="tabItems" />
-    </div>
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Header -->
+      <header class="mb-12 text-center pt-8">
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <UIcon name="i-lucide:palette" class="inline mr-3 text-indigo-500" />
+          探索 Nuxt UI 组件
+        </h2>
+        <p class="text-lg text-gray-600">探索 @nuxt/ui 提供的丰富组件</p>
+      </header>
+
+      <!-- Navigation Tabs -->
+      <div class="mb-12">
+        <UTabs v-model="activeTab" :items="tabItems" />
+      </div>
 
     <!-- Overview -->
     <div v-if="activeTab === 'overviews'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -325,6 +339,7 @@
           </div>
         </div>
       </section>
+    </div>
     </div>
   </div>
 </template>
