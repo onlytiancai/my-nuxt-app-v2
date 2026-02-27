@@ -92,6 +92,26 @@
             </svg>
           </div>
         </NuxtLink>
+
+        <!-- Database Demo Card -->
+        <NuxtLink
+          to="/db-test"
+          class="group bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300"
+        >
+          <div class="w-16 h-16 bg-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-3">数据库操作演示</h2>
+          <p class="text-white/80">学习 Prisma 数据库 CRUD 操作</p>
+          <div class="mt-4 flex items-center text-emerald-300 group-hover:text-emerald-200">
+            <span>进入演示</span>
+            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </NuxtLink>
       </div>
 
       <!-- Footer -->
