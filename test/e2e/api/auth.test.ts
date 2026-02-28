@@ -5,7 +5,7 @@
  * 参考：https://nuxt.com/docs/getting-started/testing
  */
 import { describe, it, expect } from 'vitest'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { $fetch, setup, useTestContext } from '@nuxt/test-utils/e2e'
 
 describe('认证 API', async () => {
   // 按照 Nuxt 官方文档，setup() 应该在 describe 块中使用 await 调用
@@ -218,31 +218,39 @@ describe('认证 API', async () => {
         },
       }).catch(() => {})
 
-      // 登录获取会话
-      const loginRes = await $fetch('/api/auth/login', {
+      // 使用原生 fetch 登录获取 Cookie
+      const ctx = useTestContext()
+      const baseUrl = ctx.url || 'http://127.0.0.1:3000'
+
+      const loginRes = await globalThis.fetch(`${baseUrl}api/auth/login`, {
         method: 'POST',
-        body: {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           email,
           password: oldPassword,
-        },
+        }),
       })
 
-      // 从响应获取 Cookie
-      const setCookie = loginRes.headers?.['set-cookie']
-        ? Array.isArray(loginRes.headers['set-cookie'])
-          ? loginRes.headers['set-cookie'].join('; ')
-          : loginRes.headers['set-cookie']
-        : ''
+      // 从响应头获取 Cookie
+      let cookie = ''
+      const setCookie = loginRes.headers.get('set-cookie')
+      if (setCookie) {
+        const match = setCookie.match(/nuxt-session=[^;]+/)
+        if (match) {
+          cookie = match[0]
+        }
+      }
 
-      // 修改密码
+      // 修改密码 - 使用正确的字段名
       const res = await $fetch('/api/auth/password', {
         method: 'POST',
         headers: {
-          cookie: setCookie,
+          cookie,
         },
         body: {
-          oldPassword,
+          currentPassword: oldPassword,
           newPassword,
+          confirmPassword: newPassword,
         },
       })
 

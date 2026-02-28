@@ -25,6 +25,7 @@ describe('用户资源 API', async () => {
   beforeAll(async () => {
     const ctx = useTestContext()
     const baseUrl = ctx.url || 'http://127.0.0.1:3000'
+    console.log('Base URL:', baseUrl)
 
     const response = await globalThis.fetch(`${baseUrl}api/auth/login`, {
       method: 'POST',
@@ -35,15 +36,24 @@ describe('用户资源 API', async () => {
       }),
     })
 
+    console.log('Login response status:', response.status)
+
     // 从响应头获取 Cookie
     const setCookie = response.headers.get('set-cookie')
+    console.log('Set-Cookie header:', setCookie ? 'present' : 'missing')
+
     if (setCookie) {
       // 提取 nuxt-session cookie
       const match = setCookie.match(/nuxt-session=[^;]+/)
       if (match) {
         userCookie = match[0]
+        console.log('Cookie captured:', userCookie ? 'yes' : 'no')
+      } else {
+        console.log('No nuxt-session found in cookie')
       }
     }
+
+    console.log('Final userCookie:', userCookie ? 'SET' : 'NOT SET')
   })
 
   describe('Todos API', () => {
@@ -72,9 +82,9 @@ describe('用户资源 API', async () => {
         },
       })
 
-      expect(res.todo).toBeDefined()
-      expect(res.todo.title).toContain('Test Todo')
-      testTodoId = res.todo.id
+      expect(res.id).toBeDefined()
+      expect(res.title).toContain('Test Todo')
+      testTodoId = res.id
     })
 
     it('成功更新 Todo', async () => {
@@ -89,8 +99,8 @@ describe('用户资源 API', async () => {
           },
         })
 
-        expect(res.todo).toBeDefined()
-        expect(res.todo.completed).toBe(true)
+        expect(res.id).toBeDefined()
+        expect(res.completed).toBe(true)
       }
     })
 
@@ -156,9 +166,9 @@ describe('用户资源 API', async () => {
         },
       })
 
-      expect(res.post).toBeDefined()
-      expect(res.post.title).toContain('Test Post')
-      testPostId = res.post.id
+      expect(res.id).toBeDefined()
+      expect(res.title).toContain('Test Post')
+      testPostId = res.id
     })
 
     it('成功更新 Post', async () => {
@@ -173,8 +183,8 @@ describe('用户资源 API', async () => {
           },
         })
 
-        expect(res.post).toBeDefined()
-        expect(res.post.content).toBe('Updated content')
+        expect(res.id).toBeDefined()
+        expect(res.content).toBe('Updated content')
       }
     })
 

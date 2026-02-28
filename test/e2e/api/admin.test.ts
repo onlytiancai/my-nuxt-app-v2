@@ -120,8 +120,8 @@ describe('管理员 API', async () => {
           },
         })
 
-        expect(res.user).toBeDefined()
-        expect(res.user.id).toBe(userId)
+        expect(res.id).toBeDefined()
+        expect(res.id).toBe(userId)
       }
     })
 
@@ -181,8 +181,8 @@ describe('管理员 API', async () => {
           },
         })
 
-        expect(res.user).toBeDefined()
-        expect(res.user.name).toBe('Updated Name')
+        expect(res.id).toBeDefined()
+        expect(res.name).toBe('Updated Name')
       }
     })
 
@@ -194,11 +194,11 @@ describe('管理员 API', async () => {
             cookie: adminCookie,
           },
           body: {
-            role: 'admin',
+            role: 'ADMIN',
           },
         })
 
-        expect(res.user.role).toBe('admin')
+        expect(res.role).toBe('ADMIN')
 
         // 恢复用户角色
         await $fetch(`/api/admin/users/${testUserId}`, {
@@ -207,7 +207,7 @@ describe('管理员 API', async () => {
             cookie: adminCookie,
           },
           body: {
-            role: 'user',
+            role: 'USER',
           },
         })
       }
