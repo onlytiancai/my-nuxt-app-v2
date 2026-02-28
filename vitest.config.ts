@@ -18,8 +18,16 @@ export default defineConfig({
       // E2E API 测试（使用 @nuxt/test-utils/e2e）
       {
         test: {
-          name: 'e2e',
+          name: 'e2e-api',
           include: ['test/e2e/api/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      // E2E 浏览器测试（使用 Playwright）
+      {
+        test: {
+          name: 'e2e-browser',
+          include: ['test/e2e/browser/**/*.test.ts'],
           environment: 'node',
         },
       },
