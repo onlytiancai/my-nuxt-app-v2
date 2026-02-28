@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test'
 import type { ConfigOptions } from '@nuxt/test-utils/playwright'
 
 export default defineConfig<ConfigOptions>({
-  testDir: './e2e',
+  testDir: './test/e2e/browser',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
