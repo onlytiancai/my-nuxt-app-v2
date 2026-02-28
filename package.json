@@ -25,7 +25,6 @@
     "nuxt": "^4.3.1",
     "nuxt-auth-utils": "^0.5.29",
     "tailwindcss": "^4.2.1",
-    "vue": "^3.5.28",
     "vue-router": "^4.6.4",
     "zod": "^4.3.6"
   },
@@ -39,14 +38,17 @@
     "@iconify-json/tabler": "^1.2.27",
     "@iconify-json/uil": "^1.2.3",
     "@nuxt/icon": "^2.2.1",
+    "@nuxt/test-utils": "^4.0.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@playwright/test": "^1.52.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.3.2",
     "@vitest/ui": "^3.2.4",
+    "@vue/test-utils": "^2.4.6",
     "prisma": "^7.4.1",
     "tsx": "^4.20.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "vue": "^3.5.28"
   }
 }

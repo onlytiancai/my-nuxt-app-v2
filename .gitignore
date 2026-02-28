@@ -26,3 +26,5 @@ logs
 /generated/prisma
 *.db
 public/uploads
+playwright-report
+test-results
