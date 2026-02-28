@@ -5,7 +5,7 @@
  * 参考：https://nuxt.com/docs/getting-started/testing
  */
 import { describe, it, expect, beforeAll } from 'vitest'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { $fetch, setup, useTestContext } from '@nuxt/test-utils/e2e'
 
 describe('管理员 API', async () => {
   await setup({
@@ -21,11 +21,10 @@ describe('管理员 API', async () => {
 
   // 先登录管理员账户并获取 Cookie
   beforeAll(async () => {
-    let capturedCookie = ''
+    const ctx = useTestContext()
+    const baseUrl = ctx.url || 'http://127.0.0.1:3000'
 
-    // 使用原生 fetch 获取 Cookie
-    const url = new URL('/api/auth/login', `http://127.0.0.1:${process.env.PORT || '3000'}`)
-    const response = await globalThis.fetch(url, {
+    const response = await globalThis.fetch(`${baseUrl}api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -40,12 +39,9 @@ describe('管理员 API', async () => {
       // 提取 nuxt-session cookie
       const match = setCookie.match(/nuxt-session=[^;]+/)
       if (match) {
-        capturedCookie = match[0]
+        adminCookie = match[0]
       }
     }
-
-    adminCookie = capturedCookie
-    console.log('Admin Cookie:', adminCookie ? 'captured' : 'NOT CAPTURED')
   })
 
   describe('用户列表 API', () => {

@@ -6,7 +6,7 @@
  * 参考：https://nuxt.com/docs/getting-started/testing
  */
 import { describe, it, expect, beforeAll } from 'vitest'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { $fetch, setup, useTestContext } from '@nuxt/test-utils/e2e'
 
 describe('用户资源 API', async () => {
   await setup({
@@ -19,23 +19,31 @@ describe('用户资源 API', async () => {
 
   let testTodoId: number | string
   let testPostId: number | string
-  let userCookie: string
+  let userCookie: string = ''
 
-  // 先登录普通用户账户
+  // 先登录普通用户账户并获取 Cookie
   beforeAll(async () => {
-    const loginRes = await $fetch('/api/auth/login', {
+    const ctx = useTestContext()
+    const baseUrl = ctx.url || 'http://127.0.0.1:3000'
+
+    const response = await globalThis.fetch(`${baseUrl}api/auth/login`, {
       method: 'POST',
-      body: {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         email: 'user@example.com',
         password: 'user123',
-      },
+      }),
     })
+
     // 从响应头获取 Cookie
-    userCookie = loginRes.headers?.['set-cookie']
-      ? Array.isArray(loginRes.headers['set-cookie'])
-        ? loginRes.headers['set-cookie'].join('; ')
-        : loginRes.headers['set-cookie']
-      : ''
+    const setCookie = response.headers.get('set-cookie')
+    if (setCookie) {
+      // 提取 nuxt-session cookie
+      const match = setCookie.match(/nuxt-session=[^;]+/)
+      if (match) {
+        userCookie = match[0]
+      }
+    }
   })
 
   describe('Todos API', () => {
@@ -197,6 +205,9 @@ describe('用户资源 API', async () => {
 
   describe('权限隔离', () => {
     it('用户无法访问其他用户的 Todo', async () => {
+      const ctx = useTestContext()
+      const baseUrl = ctx.url || 'http://127.0.0.1:3000'
+
       // 创建用户 1 并登录
       const timestamp1 = Date.now()
       const email1 = `test_user1_${timestamp1}@example.com`
@@ -213,18 +224,23 @@ describe('用户资源 API', async () => {
       }).catch(() => {})
 
       // 登录用户 1 获取 cookie
-      const loginRes = await $fetch('/api/auth/login', {
+      const loginRes = await globalThis.fetch(`${baseUrl}api/auth/login`, {
         method: 'POST',
-        body: {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           email: email1,
           password,
-        },
+        }),
       })
-      const user1Cookie = loginRes.headers?.['set-cookie']
-        ? Array.isArray(loginRes.headers['set-cookie'])
-          ? loginRes.headers['set-cookie'].join('; ')
-          : loginRes.headers['set-cookie']
-        : ''
+
+      let user1Cookie = ''
+      const setCookie = loginRes.headers.get('set-cookie')
+      if (setCookie) {
+        const match = setCookie.match(/nuxt-session=[^;]+/)
+        if (match) {
+          user1Cookie = match[0]
+        }
+      }
 
       // 创建用户 2 并登录
       const timestamp2 = Date.now()
