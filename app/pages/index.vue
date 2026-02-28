@@ -156,6 +156,26 @@
             </svg>
           </div>
         </NuxtLink>
+
+        <!-- Upload Demo Card -->
+        <NuxtLink
+          to="/upload-demo"
+          class="group bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300"
+        >
+          <div class="w-16 h-16 bg-blue-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-3">文件上传演示</h2>
+          <p class="text-white/80">支持本地存储和 S3/MinIO 上传</p>
+          <div class="mt-4 flex items-center text-blue-300 group-hover:text-blue-200">
+            <span>进入演示</span>
+            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </NuxtLink>
       </div>
 
       <!-- Footer -->
