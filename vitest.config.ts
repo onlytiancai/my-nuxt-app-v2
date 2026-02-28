@@ -1,21 +1,35 @@
-// Vitest 配置 - 用于单元测试和 Nuxt 组件测试
+// Vitest 多项目测试配置
+// 参考：https://nuxt.com/docs/getting-started/testing
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
-import vue from '@vitejs/plugin-vue'
-import { fileURLToPath, URL } from 'node:url'
+import { defineVitestConfig, defineVitestProject } from '@nuxt/test-utils/config'
 
 export default defineConfig({
-  plugins: [vue()],
-  resolve: {
-    alias: {
-      '~': fileURLToPath(new URL('./app', import.meta.url)),
-      '@': fileURLToPath(new URL('./app', import.meta.url)),
-    },
-  },
   test: {
-    globals: true,
-    environment: 'happy-dom',
-    include: ['test/unit/**/*.test.ts', 'test/nuxt/**/*.test.ts'],
-    exclude: ['test/e2e/**/*.test.ts', 'node_modules/**'],
-    setupFiles: ['./test/nuxt/setup.ts'],
+    projects: [
+      // 纯单元测试（Node 环境）
+      {
+        test: {
+          name: 'unit',
+          include: ['test/unit/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      // E2E API 测试（使用 @nuxt/test-utils/e2e）
+      {
+        test: {
+          name: 'e2e',
+          include: ['test/e2e/api/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      // Nuxt 运行时测试（组件、composables）
+      await defineVitestProject({
+        test: {
+          name: 'nuxt',
+          include: ['test/nuxt/**/*.test.ts'],
+        },
+      }),
+    ],
   },
 })

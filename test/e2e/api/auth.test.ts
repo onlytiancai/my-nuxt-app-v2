@@ -1,24 +1,11 @@
 /**
  * 认证 API 测试
  * 测试注册、登录、登出、密码修改等功能
- *
- * 注意：E2E 测试需要启动 Nuxt 服务器
- * 运行：pnpm test:e2e
  */
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { describe, it, expect } from 'vitest'
+import { $fetch } from '@nuxt/test-utils/e2e'
 
 describe('认证 API', () => {
-  beforeAll(async () => {
-    await setup({
-      server: true,
-      browser: false,
-      setupTimeout: 120000,
-      teardownTimeout: 30000,
-      build: true,
-    })
-  })
-
   describe('注册 API', () => {
     it('成功注册新用户', async () => {
       const timestamp = Date.now()
