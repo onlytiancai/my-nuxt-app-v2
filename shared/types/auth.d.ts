@@ -4,6 +4,7 @@ declare module '#auth-utils' {
     email: string
     name?: string | null
     avatar?: string | null
+    role?: 'USER' | 'ADMIN'
     hasPassword?: boolean
     accounts?: Array<{
       id: number

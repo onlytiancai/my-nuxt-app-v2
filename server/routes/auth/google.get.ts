@@ -16,6 +16,7 @@ export default defineOAuthGoogleEventHandler({
           email: dbUser.email,
           name: dbUser.name,
           avatar: dbUser.picture,
+          role: dbUser.role,
           hasPassword: !!dbUser.password,
         },
       })
@@ -40,6 +41,7 @@ export default defineOAuthGoogleEventHandler({
           email: dbUser.email,
           name: dbUser.name,
           avatar: dbUser.picture,
+          role: dbUser.role,
           hasPassword: !!dbUser.password,
         },
       })
@@ -67,6 +69,7 @@ export default defineOAuthGoogleEventHandler({
         email: newUser.email,
         name: newUser.name,
         avatar: newUser.avatar,
+        role: newUser.role,
         hasPassword: !!newUser.password,
       },
     })

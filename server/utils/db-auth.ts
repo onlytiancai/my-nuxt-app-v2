@@ -91,6 +91,14 @@ async function removeUserPassword(userId: number) {
   });
 }
 
+async function isAdmin(userId: number): Promise<boolean> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  return user?.role === 'ADMIN';
+}
+
 export {
   dbHashPassword,
   dbVerifyPassword,
@@ -103,4 +111,5 @@ export {
   unlinkOAuthAccount,
   updateUserPassword,
   removeUserPassword,
+  isAdmin,
 };

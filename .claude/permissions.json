@@ -1,0 +1,14 @@
+{
+  "rules": [
+    {
+      "tool": "Bash",
+      "command": "pnpm",
+      "mode": "allow"
+    },
+    {
+      "tool": "Bash",
+      "command": "pnpm:*",
+      "mode": "allow"
+    }
+  ]
+}
