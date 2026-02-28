@@ -1,10 +1,10 @@
 /**
- * E2E 测试设置文件
- * 启动 Nuxt 测试服务器
+ * E2E API 测试 - 全局设置
+ * 使用 Vitest 的 globalSetup 启动服务器
  */
 import { setup } from '@nuxt/test-utils/e2e'
 
-export default async function setupE2e() {
+export default async function setupGlobal() {
   await setup({
     server: true,
     browser: false,

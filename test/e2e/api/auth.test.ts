@@ -2,10 +2,26 @@
  * 认证 API 测试
  * 测试注册、登录、登出、密码修改等功能
  */
-import { describe, it, expect } from 'vitest'
-import { $fetch } from '@nuxt/test-utils/e2e'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { $fetch, setup } from '@nuxt/test-utils/e2e'
+
+// 全局标志，确保 setup 只调用一次
+let _setupComplete = false
 
 describe('认证 API', () => {
+  beforeAll(async () => {
+    if (!_setupComplete) {
+      await setup({
+        server: true,
+        browser: false,
+        setupTimeout: 120000,
+        teardownTimeout: 30000,
+        build: true,
+      })
+      _setupComplete = true
+    }
+  })
+
   describe('注册 API', () => {
     it('成功注册新用户', async () => {
       const timestamp = Date.now()
