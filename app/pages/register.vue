@@ -55,8 +55,8 @@
         </div>
 
         <!-- Register Form -->
-        <UForm @submit="handleRegister" :state="form" class="space-y-4">
-          <UFormField label="用户名" name="name">
+        <form @submit.prevent="handleRegister" class="space-y-4">
+          <UFormField label="用户名">
             <UInput
               v-model="form.name"
               placeholder="您的用户名"
@@ -65,7 +65,7 @@
             />
           </UFormField>
 
-          <UFormField label="邮箱" name="email">
+          <UFormField label="邮箱">
             <UInput
               v-model="form.email"
               type="email"
@@ -75,7 +75,7 @@
             />
           </UFormField>
 
-          <UFormField label="密码" name="password" :error="passwordError">
+          <UFormField label="密码" :error="passwordError">
             <UInput
               v-model="form.password"
               :type="showPassword ? 'text' : 'password'"
@@ -101,7 +101,7 @@
             </p>
           </div>
 
-          <UFormField label="确认密码" name="confirmPassword">
+          <UFormField label="确认密码">
             <UInput
               v-model="form.confirmPassword"
               :type="showConfirmPassword ? 'text' : 'password'"
@@ -114,20 +114,18 @@
             />
           </UFormField>
 
-          <UFormField name="agree">
-            <div class="flex items-start gap-2">
-              <UCheckbox
-                v-model="form.agree"
-                color="primary"
-              />
-              <span class="text-sm text-white/80">
-                我已阅读并同意
-                <a href="#" class="text-white font-medium hover:underline">服务条款</a>
-                和
-                <a href="#" class="text-white font-medium hover:underline">隐私政策</a>
-              </span>
-            </div>
-          </UFormField>
+          <div class="flex items-start gap-2">
+            <UCheckbox
+              v-model="form.agree"
+              color="primary"
+            />
+            <span class="text-sm text-white/80">
+              我已阅读并同意
+              <a href="#" class="text-white font-medium hover:underline">服务条款</a>
+              和
+              <a href="#" class="text-white font-medium hover:underline">隐私政策</a>
+            </span>
+          </div>
 
           <UAlert
             v-if="error"
@@ -145,7 +143,7 @@
           >
             创建账户
           </UButton>
-        </UForm>
+        </form>
 
         <!-- Login Link -->
         <p class="text-center mt-6 text-white/80">

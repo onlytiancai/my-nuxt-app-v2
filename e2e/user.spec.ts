@@ -4,10 +4,10 @@ test.describe('User Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Login as regular user
     await page.goto('/login')
-    await page.fill('input[type="email"]', 'user@example.com')
-    await page.fill('input[type="password"]', 'user123')
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/dashboard\/user/)
+    await page.fill('input[placeholder="your@email.com"]', 'user@example.com')
+    await page.fill('input[placeholder="••••••••"]', 'user123')
+    await page.click('button[type="submit"]:has-text("登录")')
+    await page.waitForURL(/\/dashboard\/user/, { timeout: 15000 })
   })
 
   test('should access user dashboard', async ({ page }) => {

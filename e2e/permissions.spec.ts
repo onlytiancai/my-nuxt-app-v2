@@ -4,24 +4,24 @@ test.describe('Permission Isolation', () => {
   test('should redirect regular user from admin pages to user dashboard', async ({ page }) => {
     // Login as regular user
     await page.goto('/login')
-    await page.fill('input[type="email"]', 'user@example.com')
-    await page.fill('input[type="password"]', 'user123')
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/dashboard\/user/)
+    await page.fill('input[placeholder="your@email.com"]', 'user@example.com')
+    await page.fill('input[placeholder="••••••••"]', 'user123')
+    await page.click('button[type="submit"]:has-text("登录")')
+    await page.waitForURL(/\/dashboard\/user/, { timeout: 15000 })
 
     // Try to access admin page
     await page.goto('/dashboard/admin')
     // Should redirect to user dashboard
-    await page.waitForURL(/\/dashboard\/user/)
+    await page.waitForURL(/\/dashboard\/user/, { timeout: 15000 })
   })
 
   test('should return 403 for admin API when called by regular user', async ({ page, request }) => {
     // Login as regular user
     await page.goto('/login')
-    await page.fill('input[type="email"]', 'user@example.com')
-    await page.fill('input[type="password"]', 'user123')
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/dashboard\/user/)
+    await page.fill('input[placeholder="your@email.com"]', 'user@example.com')
+    await page.fill('input[placeholder="••••••••"]', 'user123')
+    await page.click('button[type="submit"]:has-text("登录")')
+    await page.waitForURL(/\/dashboard\/user/, { timeout: 15000 })
 
     // Get session cookie
     const cookies = await page.context().cookies()
@@ -40,10 +40,10 @@ test.describe('Permission Isolation', () => {
   test('should only allow users to view their own todos', async ({ page, request }) => {
     // Login as regular user
     await page.goto('/login')
-    await page.fill('input[type="email"]', 'user@example.com')
-    await page.fill('input[type="password"]', 'user123')
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/dashboard\/user/)
+    await page.fill('input[placeholder="your@email.com"]', 'user@example.com')
+    await page.fill('input[placeholder="••••••••"]', 'user123')
+    await page.click('button[type="submit"]:has-text("登录")')
+    await page.waitForURL(/\/dashboard\/user/, { timeout: 15000 })
 
     // Get session cookie
     const cookies = await page.context().cookies()
@@ -68,10 +68,10 @@ test.describe('Permission Isolation', () => {
     // This test verifies that users can't modify todos/posts they don't own
     // Login as regular user
     await page.goto('/login')
-    await page.fill('input[type="email"]', 'user@example.com')
-    await page.fill('input[type="password"]', 'user123')
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/dashboard\/user/)
+    await page.fill('input[placeholder="your@email.com"]', 'user@example.com')
+    await page.fill('input[placeholder="••••••••"]', 'user123')
+    await page.click('button[type="submit"]:has-text("登录")')
+    await page.waitForURL(/\/dashboard\/user/, { timeout: 15000 })
 
     // Get session cookie
     const cookies = await page.context().cookies()

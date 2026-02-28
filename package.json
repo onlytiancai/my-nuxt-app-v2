@@ -9,11 +9,12 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "db:seed": "tsx prisma/seed.ts",
-    "test": "vitest --project unit --project nuxt",
-    "test:unit": "vitest --project unit",
-    "test:nuxt": "vitest --project nuxt",
+    "test": "vitest",
+    "test:unit": "vitest",
+    "test:api": "vitest --config vitest.api.config.ts",
+    "test:nuxt": "vitest --config vitest.nuxt.config.ts --run",
     "test:ui": "vitest --ui",
-    "test:e2e": "playwright test",
+    "test:e2e": "pnpm db:seed && playwright test",
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {

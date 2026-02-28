@@ -55,8 +55,8 @@
         </div>
 
         <!-- Login Form -->
-        <UForm @submit="handleLogin" :state="form" class="space-y-4">
-          <UFormField label="邮箱" name="email">
+        <form @submit.prevent="handleLogin" class="space-y-4">
+          <UFormField label="邮箱">
             <UInput
               v-model="form.email"
               type="email"
@@ -66,7 +66,7 @@
             />
           </UFormField>
 
-          <UFormField label="密码" name="password">
+          <UFormField label="密码">
             <UInput
               v-model="form.password"
               :type="showPassword ? 'text' : 'password'"
@@ -95,7 +95,7 @@
           >
             登录
           </UButton>
-        </UForm>
+        </form>
 
         <!-- Register Link -->
         <p class="text-center mt-6 text-white/80">

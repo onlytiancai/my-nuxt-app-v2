@@ -4,10 +4,10 @@ test.describe('Admin Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Login as admin
     await page.goto('/login')
-    await page.fill('input[type="email"]', 'admin@example.com')
-    await page.fill('input[type="password"]', 'admin123')
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/dashboard\/admin/)
+    await page.fill('input[placeholder="your@email.com"]', 'admin@example.com')
+    await page.fill('input[placeholder="••••••••"]', 'admin123')
+    await page.click('button[type="submit"]:has-text("登录")')
+    await page.waitForURL(/\/dashboard\/admin/, { timeout: 15000 })
   })
 
   test('should access admin dashboard', async ({ page }) => {
