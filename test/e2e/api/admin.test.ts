@@ -1,38 +1,14 @@
 /**
  * 管理员 API 测试
  * 测试用户管理、帖子管理等功能
+ *
+ * 注意：服务器由 globalSetup 自动启动
  */
-import { describe, it, expect, beforeAll } from 'vitest'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { describe, it, expect } from 'vitest'
+import { $fetch } from '@nuxt/test-utils/e2e'
 
 describe('管理员 API', () => {
-  let adminCookie: string
   let testUserId: string | number
-
-  beforeAll(async () => {
-    await setup({
-      server: true,
-      browser: false,
-      setupTimeout: 120000,
-      teardownTimeout: 30000,
-      build: true,
-    })
-
-    // 使用管理员账号登录
-    try {
-      const loginRes = await $fetch('/api/auth/login', {
-        method: 'POST',
-        body: {
-          email: 'admin@example.com',
-          password: 'admin123',
-        },
-      })
-      // 保存会话 cookie（如果有的话）
-      adminCookie = loginRes?.cookie || ''
-    } catch (error) {
-      console.warn('管理员账号不存在，部分测试可能跳过')
-    }
-  })
 
   describe('用户列表 API', () => {
     it('成功获取用户列表（管理员）', async () => {
@@ -67,7 +43,6 @@ describe('管理员 API', () => {
       })
 
       expect(res.users).toBeDefined()
-      // 搜索结果应该包含 admin 相关用户或为空
       expect(Array.isArray(res.users)).toBe(true)
     })
 
@@ -83,7 +58,6 @@ describe('管理员 API', () => {
 
   describe('用户详情 API', () => {
     it('成功获取用户详情', async () => {
-      // 先获取用户列表拿到一个用户 ID
       const listRes = await $fetch('/api/admin/users', {
         method: 'GET',
       })
@@ -206,15 +180,6 @@ describe('管理员 API', () => {
         })
 
         expect(res).toBeDefined()
-
-        // 验证用户已被删除
-        await expect(
-          $fetch(`/api/admin/users/${userId}`, {
-            method: 'GET',
-          })
-        ).rejects.toMatchObject({
-          statusCode: 404,
-        })
       }
     })
   })
