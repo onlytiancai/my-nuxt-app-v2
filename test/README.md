@@ -9,10 +9,12 @@
 ```
 test/
 ├── e2e/                  # E2E 测试（使用 @nuxt/test-utils/e2e）
-│   └── api/              # API 端点测试
-│       ├── auth.test.ts  # 认证 API 测试
-│       ├── admin.test.ts # 管理员 API 测试
-│       └── user.test.ts  # 用户资源 API 测试
+│   ├── api/              # API 端点测试（Playwright + $fetch）
+│   │   ├── auth.test.ts  # 认证 API 测试
+│   │   ├── admin.test.ts # 管理员 API 测试
+│   │   └── user.test.ts  # 用户资源 API 测试
+│   └── browser/          # 浏览器 E2E 测试（Playwright 浏览器自动化）
+│       └── auth.test.ts  # 浏览器认证流程测试
 ├── nuxt/                 # Nuxt 运行时测试（组件、composables）
 │   ├── components/
 │   │   ├── login.test.ts
@@ -39,8 +41,20 @@ pnpm test:nuxt
 # 运行 E2E API 测试（需要构建 Nuxt，约 30-60 秒）
 pnpm test:e2e
 
+# 运行浏览器 E2E 测试（需要构建 Nuxt + Playwright）
+pnpm test:e2e-browser
+
 # 使用 UI 界面运行测试
 pnpm test:ui
+
+# 运行特定测试文件
+pnpm vitest test/e2e/api/auth.test.ts
+
+# 监听模式运行测试
+pnpm vitest --watch
+
+# 运行匹配的测试（按名称过滤）
+pnpm vitest -t "登录"
 ```
 
 ## 测试类型说明
@@ -72,6 +86,17 @@ pnpm test:ui
 - 使用 `@nuxt/test-utils/e2e` 的 `$fetch` 和 `setup`
 - **重要**：`setup()` 必须在 `describe` 块顶部使用 `await` 调用
 - **认证**：使用 `globalThis.fetch` 登录获取 Cookie，然后在后续请求中通过 `cookie` 头传递
+- **权限测试**：可以测试不同角色（USER、ADMIN）的权限隔离
+
+### E2E 浏览器测试
+
+位置：`test/e2e/browser/`
+
+- 浏览器自动化测试（使用 Playwright）
+- 使用 `createPage` 创建浏览器页面
+- 使用 `url()` 生成正确的测试 URL
+- 模拟真实用户交互（点击、输入、导航）
+- **注意**：`setup()` 需要在 `describe` 块顶部使用 `await` 调用
 
 ## 测试账户
 
@@ -179,7 +204,66 @@ describe('我的 API', () => {
 })
 ```
 
-## 配置说明
+### E2E 浏览器测试示例
+
+使用 Playwright 进行浏览器自动化测试：
+
+```typescript
+import { describe, it, expect } from 'vitest'
+import { createPage, setup, url } from '@nuxt/test-utils/e2e'
+
+describe('浏览器 E2E 测试', async () => {
+  // setup() 必须在 describe 顶部使用 await 调用
+  await setup({
+    server: true,
+    browser: true,
+    setupTimeout: 120000,
+    build: true,
+    browserOptions: {
+      type: 'chromium',
+    },
+  })
+
+  it('登录页面渲染', async () => {
+    const page = await createPage(url('/login'))
+
+    // 等待页面加载
+    await page.waitForSelector('form', { timeout: 10000 })
+
+    // 填写表单
+    await page.fill('input[type="email"]', 'admin@example.com')
+    await page.fill('input[type="password"]', 'admin123')
+
+    // 提交表单
+    await page.click('button[type="submit"]')
+
+    // 等待导航
+    await page.waitForLoadState('networkidle', { timeout: 15000 })
+
+    // 验证跳转
+    expect(page.url()).toContain('/dashboard')
+  })
+
+  it('UI 组件交互测试', async () => {
+    const page = await createPage(url('/register'))
+    await page.waitForSelector('form')
+
+    // UCheckbox 组件使用 [role="checkbox"] 选择器
+    await page.click('[role="checkbox"]')
+
+    // 验证 checkbox 状态
+    const checkbox = await page.$('[role="checkbox"]')
+    expect(checkbox).toBeDefined()
+  })
+})
+```
+
+**注意事项**：
+- 使用 `url('/path')` 生成正确的测试 URL（不要直接拼接字符串）
+- `createPage` 返回 Playwright Page 对象
+- UCheckbox 等 UI 组件使用 `role` 属性而非传统 HTML 选择器
+- 浏览器测试较慢，建议设置合理的超时时间
+
 
 ### vitest.config.ts
 
@@ -200,11 +284,19 @@ export default defineConfig({
           environment: 'node',
         },
       },
-      // E2E 测试
+      // E2E API 测试
       {
         test: {
-          name: 'e2e',
+          name: 'e2e-api',
           include: ['test/e2e/api/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      // E2E 浏览器测试（Playwright）
+      {
+        test: {
+          name: 'e2e-browser',
+          include: ['test/e2e/browser/**/*.test.ts'],
           environment: 'node',
         },
       },
@@ -242,6 +334,53 @@ E2E 测试首次运行时需要：
 1. 使用 `globalThis.fetch` 登录（因为 `$fetch` 不暴露响应头）
 2. 从 `set-cookie` 响应头提取 `nuxt-session` Cookie
 3. 在后续请求中通过 `cookie` 头传递会话
+
+**完整示例**：
+```typescript
+beforeAll(async () => {
+  const ctx = useTestContext()
+  const baseUrl = ctx.url || 'http://127.0.0.1:3000'
+
+  const response = await globalThis.fetch(`${baseUrl}api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'admin@example.com', password: 'admin123' }),
+  })
+
+  const setCookie = response.headers.get('set-cookie')
+  if (setCookie) {
+    const match = setCookie.match(/nuxt-session=[^;]+/)
+    if (match) sessionCookie = match[0]
+  }
+})
+
+// 使用时
+const res = await $fetch('/api/endpoint', {
+  headers: { cookie: sessionCookie },
+})
+```
+
+### 角色值（Role）
+
+用户角色是大写的字符串：
+- `USER` - 普通用户
+- `ADMIN` - 管理员
+
+**不要写成小写**：
+```typescript
+// 正确
+expect(user.role).toBe('USER')
+
+// 错误
+expect(user.role).toBe('user') ❌
+```
+
+### API 响应结构
+
+认证 API 返回的响应结构：
+- 登录：`{ user: {...}, message: '...' }`
+- 注册：`{ user: {...}, message: '...' }`
+- 用户资源：直接返回数据对象（如 `{ id: 1, title: '...' }`）
 
 ### 分离 E2E 和组件测试
 
