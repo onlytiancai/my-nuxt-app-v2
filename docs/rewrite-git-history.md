@@ -242,3 +242,72 @@ git log --oneline
 # 6. Push 到远程
 git push --force-with-lease origin main
 ```
+
+## 方法六：手动逐个修正 commit message（最可靠）
+
+当自动脚本不可靠时，可以手动逐个修正 commit message。这是最可靠的方法。
+
+### 步骤
+
+#### 1. 分析每个 commit 的实际改动
+
+```bash
+# 查看每个 commit 改动的文件
+git log --reverse --oneline --format="%h %s" | while read hash msg; do
+    echo "=== $hash: $msg ==="
+    git show --name-only --format="" $hash
+done
+```
+
+#### 2. 使用 rebase --exec 逐个修正
+
+```bash
+# 从需要修正的第一个 commit 的父 commit 开始
+git rebase -i <commit-hash>^
+```
+
+在编辑器中，将需要修改的 commit 改为 `reword`：
+
+```
+reword abc123 旧的 message
+pick def456 正确 message 的 commit
+```
+
+保存后，Git 会让你编辑 commit message。
+
+#### 3. 或者使用 commit --amend
+
+```bash
+# 对于最近的 commit
+git commit --amend -m "正确的 message"
+
+# 对于历史中的 commit，先用 rebase edit
+git rebase -i HEAD~10  # 改成 edit 需要修改的 commit
+# 然后 amend
+git commit --amend -m "正确的 message"
+# 继续 rebase
+git rebase --continue
+```
+
+## 实际案例分析
+
+### 问题：自动化脚本导致 message 顺序错乱
+
+在使用批量自动重写时，由于 git rebase 从旧到新处理 commits，而计数器递增顺序也
+是从旧到新，但 message 数组的索引可能不匹配，导致 message 被分配到错误的 commit。
+
+### 解决方案
+
+1. **先分析每个 commit 的实际改动**
+2. **使用交互式 rebase 手动修改**
+3. **修改后立即验证**：`git show --stat HEAD`
+
+### 验证命令
+
+```bash
+# 查看每个 commit 的 message 和改动文件
+git log --oneline --format="%h %s" | while read hash msg; do
+    echo "=== $hash: $msg ==="
+    git show --name-only --format="" $hash | head -5
+done
+```
