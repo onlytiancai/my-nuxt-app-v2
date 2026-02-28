@@ -25,7 +25,6 @@ describe('用户资源 API', async () => {
   beforeAll(async () => {
     const ctx = useTestContext()
     const baseUrl = ctx.url || 'http://127.0.0.1:3000'
-    console.log('Base URL:', baseUrl)
 
     const response = await globalThis.fetch(`${baseUrl}api/auth/login`, {
       method: 'POST',
@@ -36,24 +35,15 @@ describe('用户资源 API', async () => {
       }),
     })
 
-    console.log('Login response status:', response.status)
-
     // 从响应头获取 Cookie
     const setCookie = response.headers.get('set-cookie')
-    console.log('Set-Cookie header:', setCookie ? 'present' : 'missing')
-
     if (setCookie) {
       // 提取 nuxt-session cookie
       const match = setCookie.match(/nuxt-session=[^;]+/)
       if (match) {
         userCookie = match[0]
-        console.log('Cookie captured:', userCookie ? 'yes' : 'no')
-      } else {
-        console.log('No nuxt-session found in cookie')
       }
     }
-
-    console.log('Final userCookie:', userCookie ? 'SET' : 'NOT SET')
   })
 
   describe('Todos API', () => {

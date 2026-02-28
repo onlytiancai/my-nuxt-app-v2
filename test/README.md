@@ -71,6 +71,12 @@ pnpm test:ui
 - API 端点测试
 - 使用 `@nuxt/test-utils/e2e` 的 `$fetch` 和 `setup`
 - **重要**：`setup()` 必须在 `describe` 块顶部使用 `await` 调用
+- **认证**：使用 `globalThis.fetch` 登录获取 Cookie，然后在后续请求中通过 `cookie` 头传递
+
+## 测试账户
+
+- 管理员：`admin@example.com` / `admin123`
+- 普通用户：`user@example.com` / `user123`
 
 ## 编写测试
 
@@ -114,11 +120,10 @@ describe('我的组件', () => {
 **重要**：按照 Nuxt 官方文档，`setup()` 必须在 `describe` 块顶部使用 `await` 调用：
 
 ```typescript
-import { describe, it, expect } from 'vitest'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { describe, it, expect, beforeAll } from 'vitest'
+import { $fetch, setup, useTestContext } from '@nuxt/test-utils/e2e'
 
 describe('我的 API', async () => {
-  // ✅ 正确：在 describe 块顶部使用 await setup()
   await setup({
     server: true,
     browser: false,
@@ -126,8 +131,35 @@ describe('我的 API', async () => {
     build: true,
   })
 
+  let sessionCookie: string = ''
+
+  // 登录获取会话 Cookie
+  beforeAll(async () => {
+    const ctx = useTestContext()
+    const baseUrl = ctx.url || 'http://127.0.0.1:3000'
+
+    const response = await globalThis.fetch(`${baseUrl}api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'admin@example.com',
+        password: 'admin123',
+      }),
+    })
+
+    const setCookie = response.headers.get('set-cookie')
+    if (setCookie) {
+      const match = setCookie.match(/nuxt-session=[^;]+/)
+      if (match) {
+        sessionCookie = match[0]
+      }
+    }
+  })
+
   it('应该返回数据', async () => {
-    const res = await $fetch('/api/endpoint')
+    const res = await $fetch('/api/endpoint', {
+      headers: { cookie: sessionCookie },
+    })
     expect(res.data).toBeDefined()
   })
 })
@@ -204,6 +236,13 @@ E2E 测试首次运行时需要：
 
 这是正常现象。后续测试运行会复用已启动的服务器。
 
+### Cookie 认证
+
+由于 `nuxt-auth-utils` 使用加密 Cookie 存储会话，E2E 测试需要：
+1. 使用 `globalThis.fetch` 登录（因为 `$fetch` 不暴露响应头）
+2. 从 `set-cookie` 响应头提取 `nuxt-session` Cookie
+3. 在后续请求中通过 `cookie` 头传递会话
+
 ### 分离 E2E 和组件测试
 
 `@nuxt/test-utils/runtime` 和 `@nuxt/test-utils/e2e` 不能在同一文件中混用。如果需要同时使用：
@@ -218,3 +257,4 @@ E2E 测试首次运行时需要：
 - [Nuxt Testing](https://nuxt.com/docs/getting-started/testing)
 - [@nuxt/test-utils](https://github.com/nuxt/test-utils)
 - [Vitest](https://vitest.dev/)
+- [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils)
