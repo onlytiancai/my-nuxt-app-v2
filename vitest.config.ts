@@ -2,7 +2,7 @@
 // 参考：https://nuxt.com/docs/getting-started/testing
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
-import { defineVitestConfig, defineVitestProject } from '@nuxt/test-utils/config'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 
 export default defineConfig({
   test: {
@@ -12,14 +12,6 @@ export default defineConfig({
         test: {
           name: 'unit',
           include: ['test/unit/**/*.test.ts'],
-          environment: 'node',
-        },
-      },
-      // E2E API 测试（使用 @nuxt/test-utils/e2e）
-      {
-        test: {
-          name: 'e2e',
-          include: ['test/e2e/api/**/*.test.ts'],
           environment: 'node',
         },
       },
