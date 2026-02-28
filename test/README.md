@@ -4,22 +4,21 @@
 
 ## 测试结构
 
+按照 [Nuxt 官方文档](https://nuxt.com/docs/getting-started/testing) 推荐的测试结构：
+
 ```
 test/
 ├── e2e/                  # E2E 测试（使用 @nuxt/test-utils/e2e）
-│   ├── api/              # API 端点测试
-│   │   ├── auth.test.ts  # 认证 API 测试
-│   │   ├── admin.test.ts # 管理员 API 测试
-│   │   └── user.test.ts  # 用户资源 API 测试
-│   ├── browser/          # 浏览器 E2E 测试
-│   │   └── auth.test.ts  # 认证流程浏览器测试
-│   └── setup.ts          # E2E 测试全局设置
+│   └── api/              # API 端点测试
+│       ├── auth.test.ts  # 认证 API 测试
+│       ├── admin.test.ts # 管理员 API 测试
+│       └── user.test.ts  # 用户资源 API 测试
 ├── nuxt/                 # Nuxt 运行时测试（组件、composables）
 │   ├── components/
 │   │   ├── login.test.ts
 │   │   ├── register.test.ts
 │   │   └── todos.test.ts
-│   └── setup.ts          # Nuxt 测试设置
+│   └── composables/
 └── unit/                 # 纯单元测试（Node 环境）
     └── utils/
         └── helpers.test.ts
@@ -28,26 +27,20 @@ test/
 ## 测试命令
 
 ```bash
-# 运行所有测试（unit + nuxt）
+# 运行所有测试
 pnpm test
 
-# 运行单元测试
+# 运行单元测试（unit + nuxt，不运行 E2E）
 pnpm test:unit
 
 # 运行 Nuxt 组件测试
 pnpm test:nuxt
 
-# 运行 E2E API 测试（需要启动 Nuxt 服务器）
+# 运行 E2E API 测试（需要构建 Nuxt，约 30-60 秒）
 pnpm test:e2e
-
-# 运行浏览器 E2E 测试（使用 Playwright）
-pnpm test:e2e:browser
 
 # 使用 UI 界面运行测试
 pnpm test:ui
-
-# 运行所有测试（单元 + Nuxt + E2E）
-pnpm test:all
 ```
 
 ## 测试类型说明
@@ -69,7 +62,7 @@ pnpm test:all
 - Composables 测试
 - 使用 `mountSuspended` 挂载组件
 - 使用 `registerEndpoint` 模拟 API
-- 运行环境：Nuxt 运行时环境
+- 运行环境：Nuxt 运行时环境（happy-dom）
 
 ### E2E API 测试
 
@@ -77,16 +70,7 @@ pnpm test:all
 
 - API 端点测试
 - 使用 `@nuxt/test-utils/e2e` 的 `$fetch` 和 `setup`
-- 自动启动 Nuxt 测试服务器
-- 运行环境：Node.js
-
-### 浏览器 E2E 测试
-
-位置：`test/e2e/browser/`
-
-- 完整浏览器端测试
-- 使用 Playwright
-- 测试真实用户交互流程
+- **重要**：`setup()` 必须在 `describe` 块顶部使用 `await` 调用
 
 ## 编写测试
 
@@ -106,13 +90,14 @@ describe('工具函数', () => {
 ### Nuxt 组件测试示例
 
 ```typescript
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mountSuspended, registerEndpoint } from '@nuxt/test-utils/runtime'
 import MyComponent from '~/components/MyComponent.vue'
 
 describe('我的组件', () => {
   beforeEach(() => {
     registerEndpoint('/api/data', {
+      method: 'POST',
       handler: () => ({ data: 'mocked' })
     })
   })
@@ -126,14 +111,38 @@ describe('我的组件', () => {
 
 ### E2E API 测试示例
 
+**重要**：按照 Nuxt 官方文档，`setup()` 必须在 `describe` 块顶部使用 `await` 调用：
+
 ```typescript
 import { describe, it, expect } from 'vitest'
-import { $fetch } from '@nuxt/test-utils/e2e'
+import { $fetch, setup } from '@nuxt/test-utils/e2e'
 
-describe('API 测试', () => {
+describe('我的 API', async () => {
+  // ✅ 正确：在 describe 块顶部使用 await setup()
+  await setup({
+    server: true,
+    browser: false,
+    setupTimeout: 120000,
+    build: true,
+  })
+
   it('应该返回数据', async () => {
     const res = await $fetch('/api/endpoint')
     expect(res.data).toBeDefined()
+  })
+})
+```
+
+**错误示例**（不要这样做）：
+
+```typescript
+import { describe, it, expect, beforeAll } from 'vitest'
+import { $fetch, setup } from '@nuxt/test-utils/e2e'
+
+describe('我的 API', () => {
+  // ❌ 错误：在 beforeAll 中调用 setup()
+  beforeAll(async () => {
+    await setup({ ... })
   })
 })
 ```
@@ -142,27 +151,70 @@ describe('API 测试', () => {
 
 ### vitest.config.ts
 
-主配置文件，用于单元测试和 Nuxt 组件测试：
-- 配置多项目测试（unit、nuxt、e2e）
-- 使用 `defineVitestProject` 配置 Nuxt 环境
+主配置文件，使用 Vitest 多项目配置：
+
+```typescript
+import { defineConfig } from 'vitest/config'
+import { defineVitestProject } from '@nuxt/test-utils/config'
+
+export default defineConfig({
+  test: {
+    projects: [
+      // 单元测试
+      {
+        test: {
+          name: 'unit',
+          include: ['test/unit/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      // E2E 测试
+      {
+        test: {
+          name: 'e2e',
+          include: ['test/e2e/api/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      // Nuxt 组件测试
+      await defineVitestProject({
+        test: {
+          name: 'nuxt',
+          include: ['test/nuxt/**/*.test.ts'],
+          environment: 'nuxt',
+        },
+      }),
+    ],
+  },
+})
+```
 
 ### vitest.e2e.config.ts
 
-E2E 测试专用配置：
-- 使用 `node` 环境
-- 包含 `test/e2e` 目录
-- 设置 setup 文件启动 Nuxt 服务器
-- 设置更长的超时时间
+E2E 测试专用配置（独立运行 E2E 测试时使用）。
 
-### playwright.config.ts
+## 注意事项
 
-Playwright 浏览器测试配置：
-- 配置测试目录为 `test/e2e/browser`
-- 使用 Chromium 浏览器
+### E2E 测试运行较慢的原因
+
+E2E 测试首次运行时需要：
+1. 构建 Nuxt 应用（约 30-60 秒）
+2. 启动测试服务器
+3. 等待服务器就绪
+
+这是正常现象。后续测试运行会复用已启动的服务器。
+
+### 分离 E2E 和组件测试
+
+`@nuxt/test-utils/runtime` 和 `@nuxt/test-utils/e2e` 不能在同一文件中混用。如果需要同时使用：
+
+- 使用 `.nuxt.spec.ts` 或 `.nuxt.test.ts` 扩展名运行组件测试
+- 使用 `.e2e.spec.ts` 或 `.e2e.test.ts` 扩展名运行 E2E 测试
+
+或在文件中使用 `// @vitest-environment nuxt` 注释指定环境。
 
 ## 参考文档
 
 - [Nuxt Testing](https://nuxt.com/docs/getting-started/testing)
 - [@nuxt/test-utils](https://github.com/nuxt/test-utils)
 - [Vitest](https://vitest.dev/)
-- [Playwright](https://playwright.dev/)

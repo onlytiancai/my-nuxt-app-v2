@@ -15,11 +15,20 @@ export default defineConfig({
           environment: 'node',
         },
       },
+      // E2E API 测试（使用 @nuxt/test-utils/e2e）
+      {
+        test: {
+          name: 'e2e',
+          include: ['test/e2e/api/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
       // Nuxt 运行时测试（组件、composables）
       await defineVitestProject({
         test: {
           name: 'nuxt',
           include: ['test/nuxt/**/*.test.ts'],
+          environment: 'nuxt',
         },
       }),
     ],

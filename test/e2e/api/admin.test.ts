@@ -2,18 +2,59 @@
  * 管理员 API 测试
  * 测试用户管理、帖子管理等功能
  *
- * 注意：服务器由 globalSetup 自动启动
+ * 参考：https://nuxt.com/docs/getting-started/testing
  */
-import { describe, it, expect } from 'vitest'
-import { $fetch } from '@nuxt/test-utils/e2e'
+import { describe, it, expect, beforeAll } from 'vitest'
+import { $fetch, setup } from '@nuxt/test-utils/e2e'
 
-describe('管理员 API', () => {
+describe('管理员 API', async () => {
+  await setup({
+    server: true,
+    browser: false,
+    setupTimeout: 120000,
+    teardownTimeout: 30000,
+    build: true,
+  })
+
   let testUserId: string | number
+  let adminCookie: string = ''
+
+  // 先登录管理员账户并获取 Cookie
+  beforeAll(async () => {
+    let capturedCookie = ''
+
+    // 使用原生 fetch 获取 Cookie
+    const url = new URL('/api/auth/login', `http://127.0.0.1:${process.env.PORT || '3000'}`)
+    const response = await globalThis.fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'admin@example.com',
+        password: 'admin123',
+      }),
+    })
+
+    // 从响应头获取 Cookie
+    const setCookie = response.headers.get('set-cookie')
+    if (setCookie) {
+      // 提取 nuxt-session cookie
+      const match = setCookie.match(/nuxt-session=[^;]+/)
+      if (match) {
+        capturedCookie = match[0]
+      }
+    }
+
+    adminCookie = capturedCookie
+    console.log('Admin Cookie:', adminCookie ? 'captured' : 'NOT CAPTURED')
+  })
 
   describe('用户列表 API', () => {
     it('成功获取用户列表（管理员）', async () => {
       const res = await $fetch('/api/admin/users', {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       expect(res.users).toBeDefined()
@@ -25,6 +66,9 @@ describe('管理员 API', () => {
     it('用户列表包含用户详细信息', async () => {
       const res = await $fetch('/api/admin/users', {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       if (res.users.length > 0) {
@@ -40,6 +84,9 @@ describe('管理员 API', () => {
     it('支持搜索用户', async () => {
       const res = await $fetch('/api/admin/users?search=admin', {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       expect(res.users).toBeDefined()
@@ -49,6 +96,9 @@ describe('管理员 API', () => {
     it('支持分页获取用户列表', async () => {
       const res = await $fetch('/api/admin/users?page=1&pageSize=5', {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       expect(res.pagination.pageSize).toBe(5)
@@ -60,12 +110,18 @@ describe('管理员 API', () => {
     it('成功获取用户详情', async () => {
       const listRes = await $fetch('/api/admin/users', {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       if (listRes.users.length > 0) {
         const userId = listRes.users[0].id
         const res = await $fetch(`/api/admin/users/${userId}`, {
           method: 'GET',
+          headers: {
+            cookie: adminCookie,
+          },
         })
 
         expect(res.user).toBeDefined()
@@ -77,6 +133,9 @@ describe('管理员 API', () => {
       await expect(
         $fetch('/api/admin/users/999999', {
           method: 'GET',
+          headers: {
+            cookie: adminCookie,
+          },
         })
       ).rejects.toMatchObject({
         statusCode: 404,
@@ -107,6 +166,9 @@ describe('管理员 API', () => {
       // 获取用户 ID
       const listRes = await $fetch(`/api/admin/users?search=${email}`, {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       if (listRes.users.length > 0) {
@@ -115,6 +177,9 @@ describe('管理员 API', () => {
 
         const res = await $fetch(`/api/admin/users/${userId}`, {
           method: 'PATCH',
+          headers: {
+            cookie: adminCookie,
+          },
           body: {
             name: 'Updated Name',
           },
@@ -129,6 +194,9 @@ describe('管理员 API', () => {
       if (testUserId) {
         const res = await $fetch(`/api/admin/users/${testUserId}`, {
           method: 'PATCH',
+          headers: {
+            cookie: adminCookie,
+          },
           body: {
             role: 'admin',
           },
@@ -139,6 +207,9 @@ describe('管理员 API', () => {
         // 恢复用户角色
         await $fetch(`/api/admin/users/${testUserId}`, {
           method: 'PATCH',
+          headers: {
+            cookie: adminCookie,
+          },
           body: {
             role: 'user',
           },
@@ -170,6 +241,9 @@ describe('管理员 API', () => {
       // 获取用户 ID
       const listRes = await $fetch(`/api/admin/users?search=${email}`, {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       if (listRes.users.length > 0) {
@@ -177,6 +251,9 @@ describe('管理员 API', () => {
 
         const res = await $fetch(`/api/admin/users/${userId}`, {
           method: 'DELETE',
+          headers: {
+            cookie: adminCookie,
+          },
         })
 
         expect(res).toBeDefined()
@@ -188,6 +265,9 @@ describe('管理员 API', () => {
     it('成功获取所有帖子列表', async () => {
       const res = await $fetch('/api/admin/posts', {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       expect(res.posts).toBeDefined()
@@ -198,6 +278,9 @@ describe('管理员 API', () => {
     it('支持分页获取帖子列表', async () => {
       const res = await $fetch('/api/admin/posts?page=1&pageSize=5', {
         method: 'GET',
+        headers: {
+          cookie: adminCookie,
+        },
       })
 
       expect(res.pagination.pageSize).toBe(5)
