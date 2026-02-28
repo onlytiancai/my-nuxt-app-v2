@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "devtools": {
+      "command": "chrome-devtools-mcp",
+      "args": ["--browser-url=http://localhost:9222"]
+    }
+  }
+}

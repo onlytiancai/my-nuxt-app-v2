@@ -185,13 +185,9 @@
         </div>
 
         <!-- Set Password Modal -->
-        <UModal v-model:open="showSetPassword">
-          <UCard>
-            <template #header>
-              <h3 class="text-lg font-bold">设置密码</h3>
-            </template>
-
-            <UForm @submit="handleSetPassword" :state="passwordForm" class="space-y-4">
+        <UModal v-model:open="showSetPassword" title="设置密码" description="为您的账户设置一个新密码">
+          <template #body>
+            <UForm :state="passwordForm" @submit.prevent="handleSetPassword" class="space-y-4">
               <UFormField label="新密码" name="newPassword">
                 <UInput
                   v-model="passwordForm.newPassword"
@@ -224,17 +220,13 @@
                 </UButton>
               </div>
             </UForm>
-          </UCard>
+          </template>
         </UModal>
 
         <!-- Change Password Modal -->
-        <UModal v-model:open="showPasswordModal">
-          <UCard>
-            <template #header>
-              <h3 class="text-lg font-bold">修改密码</h3>
-            </template>
-
-            <UForm @submit="handleChangePassword" :state="passwordForm" class="space-y-4">
+        <UModal v-model:open="showPasswordModal" title="修改密码" description="请输入当前密码和新密码来更新您的密码">
+          <template #body>
+            <UForm :state="passwordForm" @submit.prevent="handleChangePassword" class="space-y-4">
               <UFormField label="当前密码" name="currentPassword">
                 <UInput
                   v-model="passwordForm.currentPassword"
@@ -275,7 +267,7 @@
                 </UButton>
               </div>
             </UForm>
-          </UCard>
+          </template>
         </UModal>
       </div>
     </div>
