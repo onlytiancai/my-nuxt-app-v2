@@ -16,6 +16,7 @@ export default defineOAuthGitHubEventHandler({
           email: dbUser.email,
           name: dbUser.name,
           avatar: dbUser.avatar,
+          hasPassword: !!dbUser.password,
         },
       })
       return
@@ -39,6 +40,7 @@ export default defineOAuthGitHubEventHandler({
           email: dbUser.email,
           name: dbUser.name,
           avatar: dbUser.avatar,
+          hasPassword: !!dbUser.password,
         },
       })
       return
@@ -65,6 +67,7 @@ export default defineOAuthGitHubEventHandler({
         email: newUser.email,
         name: newUser.name,
         avatar: newUser.avatar,
+        hasPassword: !!newUser.password,
       },
     })
   },
